@@ -107,6 +107,7 @@ modules_enabled = {
 		"account_activity";
 		"migrate_lastlog2"; -- Automatically migrate data from mod_lastlog2 if necessary
 		"protect_last_admin";
+		"c2s_limit_sessions";
 
 	-- Spam/abuse management
 		"spam_reporting"; -- Allow users to report spam/abuse
@@ -148,6 +149,8 @@ modules_enabled = {
 		"measure_lua";
 		"measure_malloc";
 }
+
+max_resources = Lua.tonumber(ENV_SNIKKET_MAX_USER_CLIENTS) or 10
 
 registration_watchers = {} -- Disable by default
 registration_notification = "New user registered: $username"
