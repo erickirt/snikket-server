@@ -169,7 +169,7 @@ https_ports = {};
 
 c2s_direct_tls_ports = { 5223 }
 
-tls_profile = ENV_SNIKKET_TLS_PROFILE or "modern"
+tls_profile = ENV_SNIKKET_TLS_PROFILE or "intermediate"
 
 proxy65_ports = { ENV_SNIKKET_PROXY65_PORT or 5000 }
 

@@ -102,13 +102,18 @@ Optional. **Public.** Email address to which people should send security reports
 Specify the TLS profile to use for chat connections. You only need this if you
 have trouble connecting some older devices to connect to your server.
 
+The profiles are based on the profiles published by the [TLSref project](https://tlsref.org).
+
 Valid options:
 
-- `modern` - the default, strongest security. Compatible with Android 10+, iOS 12+.
-- `intermediate` - wide compatibility with older devices, high security level
+- `modern` - the strongest security. ~~Compatible with Android 10+, iOS 12+.~~
+- `intermediate` - wide compatibility with older devices, high security level - the default
 - `old` - compatibility with very old devices, not generally recommended
 
-The profiles are based on [Mozilla's server-side TLS profiles](https://wiki.mozilla.org/Security/Server_Side_TLS).
+**Note:** The `modern` profile is not currently compatible with some apps,
+including current versions of Snikket iOS. We intend to switch to the `modern`
+profile by default in a future release - after we have assessed the impact and
+ensured sufficient compatibility.
 
 ### `SNIKKET_WEB_AVATAR_CACHE_TTL`
 
