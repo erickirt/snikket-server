@@ -115,6 +115,22 @@ including current versions of Snikket iOS. We intend to switch to the `modern`
 profile by default in a future release - after we have assessed the impact and
 ensured sufficient compatibility.
 
+### `SNIKKET_TLS_PROFILE_VERSION`
+
+The version of the TLS profile data to use (as published by the [TLSref project](https://tlsref.org).
+
+Currently accepted values are:
+
+- `5.7` (default, strongly recommended)
+- `5.8` (may break connections)
+- `6.0` (may break connections)
+
+At this time it is **not** recommended to change this option. We will change
+the default in a future release after further work to ensure compatibility.
+
+We recommend *not* setting this option at all, so that you will automatically
+receive new versions as they are ready.
+
 ### `SNIKKET_WEB_AVATAR_CACHE_TTL`
 
 The time (in seconds) for which the web portal will allow avatars to be cached by browsers.
