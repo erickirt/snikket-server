@@ -1,3 +1,5 @@
+local usermanager = require "prosody.core.usermanager";
+
 local http = require "prosody.net.http";
 local json = require "prosody.util.json";
 local promise = require "prosody.util.promise";
@@ -16,6 +18,7 @@ local metric_registry = require "core.statsmanager".get_metric_registry();
 local mod_audit_status = module:depends("audit_status");
 local mod_measure_active_users = module:depends("measure_active_users");
 local mod_snikket_version = module:depends("snikket_version");
+local mod_invites = module:depends("invites");
 
 local last_health_report;
 
@@ -33,6 +36,34 @@ local function get_gauge_metric(name)
 	return (metric_registry.families[name].data:get(module.host) or {}).value;
 end
 
+local function get_bootstrap_status()
+	local admins = usermanager.get_users_with_role("prosody:admin", module.host);
+	if admins and #admins > 0 then
+		return "ok";
+	end
+
+	-- No admin account yet
+	for _, invite in mod_invites.pending_account_invites() do
+		local invite_roles = invite.additional_data and invite.additional_data.roles;
+		if invite_roles then
+			for _, role_name in ipairs(invite_roles) do
+				if role_name == "prosody:admin" then
+					-- Found a pending admin invite
+					return "pending";
+				end
+			end
+		end
+	end
+
+	-- No pending admin invite yet
+	if module:get_option_string("invites_bootstrap_secret") then
+		return "ready";
+	end
+
+	-- No admin, no pending invite, not in bootstrap mode... oh no
+	return "unavailable";
+end
+
 function report_health()
 	local url = health_report_api:gsub("DOMAIN", http.urlencode(module.host));
 
@@ -41,6 +72,7 @@ function report_health()
 	local health = {
 		launch_time = prosody.start_time;
 		crashed = not not mod_audit_status.crashed;
+		bootstrap_status = get_bootstrap_status();
 		dau = get_gauge_metric("prosody_mod_measure_active_users/active_users_1d");
 		wau = get_gauge_metric("prosody_mod_measure_active_users/active_users_7d");
 		mau = get_gauge_metric("prosody_mod_measure_active_users/active_users_30d");
